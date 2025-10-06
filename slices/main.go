@@ -18,9 +18,6 @@ func main() {
 	// slicing the slice, 1 is the starting point, 4 will not be inclued in the result
 	fruits = append(fruits[1:4], "New")
 	fmt.Println(fruits)
-
-	
-
 }
 
 /*

@@ -8,6 +8,7 @@ import (
 
 func sieveOfEratosthenes(n int) []int {
 	primes := make([]bool, n+1)
+	
 	for i := 2; i <= n; i++ {
 		primes[i] = true
 	}
