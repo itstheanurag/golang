@@ -92,4 +92,4 @@ The type of the username variable is: int32
 
 ## File
 
-- [`main.go`](variables/main.go)
+- [`variables/main.go`](main.go)
