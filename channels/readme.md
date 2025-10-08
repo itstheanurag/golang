@@ -126,4 +126,4 @@ Multiple workers process jobs from a shared
 
 ## File
 
-- [`main.go`](channels/main.go)
+- [`channels/main.go`](main.go)

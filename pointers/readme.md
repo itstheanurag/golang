@@ -242,7 +242,6 @@ Pointers are a powerful feature in Go that enable:
 
 Understanding pointers is crucial for writing efficient and idiomatic Go code. Start with simple examples and gradually work your way up to more complex pointer operations.
 
-
 ## File
 
-- [`main.go`](pointers/main.go)
+- [`pointers/main.go`](main.go)

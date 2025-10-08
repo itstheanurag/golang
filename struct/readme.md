@@ -108,4 +108,4 @@ It's a Circle with radius 7.00!
 
 ## File
 
-- [`main.go`](struct/main.go)
+- [`structs/main.go`](main.go)

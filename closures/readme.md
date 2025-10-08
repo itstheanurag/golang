@@ -30,4 +30,4 @@ A **closure** is a function that references variables from outside its own body.
 
 ## File
 
-- [`main.go`](closures/main.go)
+- [`closures/main.go`](main.go)

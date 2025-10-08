@@ -258,4 +258,4 @@ goto Label
 
 ## File
 
-- [`main.go`](loops/main.go)
+- [`loops/main.go`](main.go)

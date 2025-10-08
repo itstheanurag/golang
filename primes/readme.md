@@ -32,7 +32,7 @@ Time taken: 1.234567s
 
 ## File
 
-- [`primes/main.go`](primes/main.go)
+- [`primes/main.go`](main.go)
 
 ## References
 

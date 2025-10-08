@@ -46,4 +46,4 @@ Added 1 to the rating  9.5
 
 ## File
 
-- [`main.go`](input/main.go)
+- [`input/main.go`](main.go)
