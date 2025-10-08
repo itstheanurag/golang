@@ -71,4 +71,4 @@ fmt.Println(fruits) // ["Banana", "Mango", "Kiwi", "New"]
 
 ## File
 
-- [`slices/main.go`](slices/main.go)
+- [`main.go`](slices/main.go)

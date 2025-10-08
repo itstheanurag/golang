@@ -122,3 +122,8 @@ default:
 ### 1. **Worker Pool**
 
 Multiple workers process jobs from a shared
+
+
+## File
+
+- [`main.go`](channels/main.go)
