@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-func sieveOfEratosthenes(n int) []int {
+func sieveOfEratosthenes(n int) (int, int) {
 	primes := make([]bool, n+1)
-	
+
 	for i := 2; i <= n; i++ {
 		primes[i] = true
 	}
-
-	for i := 2; i <= int(math.Sqrt(float64(n))); i++ {
+	limit := int(math.Sqrt(float64(n)))
+	for i := 2; i <= limit; i++ {
 		if primes[i] {
 			for j := i * i; j <= n; j += i {
 				primes[j] = false
@@ -21,21 +21,23 @@ func sieveOfEratosthenes(n int) []int {
 		}
 	}
 
-	var primeNumbers []int
+	var primesFound = 0
+	var lastPrime = 2
 	for i, isPrime := range primes {
 		if isPrime {
-			primeNumbers = append(primeNumbers, i)
+			primesFound++
+			lastPrime = i
 		}
 	}
 
-	return primeNumbers
+	return primesFound, lastPrime
 }
 
 func main() {
-	n := 10000000
+	n := 100000000
 	start := time.Now()
-	primeNumbers := sieveOfEratosthenes(n)
+	primesFound, lastPrime := sieveOfEratosthenes(n)
 	elapsed := time.Since(start)
-	fmt.Printf("Primes found: %d, last prime: %d\n", len(primeNumbers), primeNumbers[len(primeNumbers)-1])
+	fmt.Printf("Primes found: %d, last prime: %d\n", primesFound, lastPrime)
 	fmt.Printf("Time taken: %s\n", elapsed)
 }

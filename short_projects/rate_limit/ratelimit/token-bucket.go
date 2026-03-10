@@ -22,7 +22,7 @@ func NewTokenBucketRateLimiter(rate float64, capacity int) *TokenBucket {
 	token_bucket := &TokenBucket{
 		rate:            rate,
 		capacity:        capacity,
-		cleanupInterval: time.Second,
+		cleanupInterval: 10 * time.Minute,
 		buckets:         make(map[string]*bucket),
 	}
 
