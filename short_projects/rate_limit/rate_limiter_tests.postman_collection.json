@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "8b9a1e0a-1a2b-3c4d-5e6f-7a8b9c0d1e2f",
+		"name": "Rate Limiter Testing",
+		"description": "API collection to test different rate limiting strategies: Fixed Window, Sliding Window, Token Bucket, and Client Tiers.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fixed Window Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/fixed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"fixed"
+					]
+				},
+				"description": "Tests the Fixed Window limiter. 10 requests allowed every 20 seconds."
+			},
+			"response": []
+		},
+		{
+			"name": "Sliding Window Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sliding",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sliding"
+					]
+				},
+				"description": "Tests the Sliding Window limiter (Redis-backed). 10 requests allowed in any rolling 20s window."
+			},
+			"response": []
+		},
+		{
+			"name": "Token Bucket Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"token"
+					]
+				},
+				"description": "Tests the Token Bucket limiter. Refill rate: 5 tokens/sec, Capacity: 10 tokens."
+			},
+			"response": []
+		},
+		{
+			"name": "Client Tier - Default (Free)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tier",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tier"
+					]
+				},
+				"description": "Tests the default tier for the Tiered Limiter. 1 request per second."
+			},
+			"response": []
+		},
+		{
+			"name": "Client Tier - Gold Member",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-Key",
+						"value": "gold-member",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/tier",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tier"
+					]
+				},
+				"description": "Tests the Gold Member tier. 10 requests per second."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

@@ -8,11 +8,17 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// SlidingWindowRateLimter provides high-precision rolling-window limiting using Redis.
+// Use Case: Distributed systems where limits must be shared across multiple server instances.
 type SlidingWindowRateLimter struct {
-	windowDuration   time.Duration
+	// windowDuration is the rolling period (e.g., last 60s) being checked.
+	windowDuration time.Duration
+	// allowedPerWindow is the max number of requests allowed within any sliding window.
 	allowedPerWindow int
-	redisClient      *redis.Client
-	keyPrefix        string
+	// redisClient manages the connection to the shared Redis instance.
+	redisClient *redis.Client
+	// keyPrefix helps namespace the rate limit keys in Redis.
+	keyPrefix string
 }
 
 func NewSlidingWindowRateLimiter(client *redis.Client, limit int, windowSize time.Duration) *SlidingWindowRateLimter {
@@ -24,19 +30,25 @@ func NewSlidingWindowRateLimiter(client *redis.Client, limit int, windowSize tim
 	}
 }
 
+// Allow uses a Redis Sorted Set (ZSET) where each member is a request timestamp.
 func (rl *SlidingWindowRateLimter) Allow(ctx context.Context, key string) (bool, error) {
 	now := time.Now()
+	// The window slides forward by only considering logs after windowStart.
 	windowStart := now.Add(-rl.windowDuration)
 	redis_key := rl.keyPrefix + key
 
+	// Why Redis Pipelining?
+	// We need to perform multiple operations (Evict old logs, Count current logs).
+	// Pipelining batches these into one network request, reducing latency overhead.
 	pipe := rl.redisClient.Pipeline()
-	// Remove entries outside the current window
+
+	// Step 1: Remove all timestamps older than the current window boundary.
 	pipe.ZRemRangeByScore(ctx, redis_key, "0", floatToString(float64(windowStart.UnixMicro())))
 
-	// Count remaining entries in the window
+	// Step 2: Get the count of remaining active timestamps.
 	countCmd := pipe.ZCard(ctx, redis_key)
 
-	// Execute the pipeline
+	// Execute batch operations at once.
 	_, err := pipe.Exec(ctx)
 	if err != nil {
 		return false, err
@@ -44,12 +56,13 @@ func (rl *SlidingWindowRateLimter) Allow(ctx context.Context, key string) (bool,
 
 	count := countCmd.Val()
 
+	// Step 3: Check against the limit.
 	if count >= int64(rl.allowedPerWindow) {
 		return false, nil
 	}
 
-	// Add current request to the sorted set
-	// Using UnixMicro as both member and score ensures uniqueness
+	// Step 4: Add the current request's timestamp (in microseconds) to the log.
+	// Using UnixMicro as score/member allows sorting and handles simultaneous requests.
 	member := float64(now.UnixMicro())
 	err = rl.redisClient.ZAdd(ctx, redis_key, redis.Z{
 		Score:  member,
@@ -60,7 +73,7 @@ func (rl *SlidingWindowRateLimter) Allow(ctx context.Context, key string) (bool,
 		return false, err
 	}
 
-	// Set expiration on the key to auto-cleanup inactive clients
+	// Maintenance: Ensure the key is auto-deleted if the client is inactive for a while.
 	rl.redisClient.Expire(ctx, redis_key, rl.windowDuration*2)
 
 	return true, nil
